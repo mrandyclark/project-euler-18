@@ -13,18 +13,36 @@ PageManager.prototype.yourCode = function() {
 	var originalTriangle = this.eulerText;
 	console.log(originalTriangle);
 
-	var six = this.anotherFunction("benson!");
-	console.log(six);
+	this.splitTriangle  = this.processOriginalTriangle(originalTriangle);
+	//console.log(this.splitTriangle);
 
-	this.showResult(six);
+	// array to hold the valid numbers to sum for a result
+	this.sumArray = [];
+
+	// gives us a function with the context of the pagemanager
+	var processLineFunction = $.proxy(this.processLine, this);
+
+	// loop through each line of numbers and process them,
+	// adding them to the sum array
+	_.each(
+		this.splitTriangle,
+		function(currentLine) { processLineFunction(currentLine) }
+	);
+
+	console.log(this.sumArray);
+
 	return false;
 };
 
-// an example seperate function
-PageManager.prototype.anotherFunction = function(sayTheseWords) {
+PageManager.prototype.processOriginalTriangle = function(originalTriangle) {
+	return originalTriangle.split("\n");
+};
 
-	console.log(sayTheseWords);
-	return 6;
+PageManager.prototype.processLine = function(lineOfNumbers) {
+
+	var splitsies = lineOfNumbers.split(" ");
+	console.log(splitsies);
+	return this.sumArray.push(splitsies[0]);
 };
 
 
