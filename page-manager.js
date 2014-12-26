@@ -16,7 +16,7 @@ PageManager.prototype.yourCode = function() {
 	this.splitTriangle  = this.processOriginalTriangle(originalTriangle);
 	//console.log(this.splitTriangle);
 
-	// array to hold the valid numbers to sum for a result
+	this.previousPosition = 0;
 	this.sumArray = [];
 
 	// gives us a function with the context of the pagemanager
@@ -28,8 +28,9 @@ PageManager.prototype.yourCode = function() {
 		this.splitTriangle,
 		function(currentLine) { processLineFunction(currentLine) }
 	);
-
-	console.log(this.sumArray);
+	
+	var sum = _.reduce(this.sumArray, function(memo, num){ return memo + num; }, 0);
+	this.showResult(sum);
 
 	return false;
 };
@@ -38,11 +39,29 @@ PageManager.prototype.processOriginalTriangle = function(originalTriangle) {
 	return originalTriangle.split("\n");
 };
 
+// returns an object of {value: xxx, position: xxx}
+// where value is the largest int within 1 of the position,
+// and position is the new position of that int
 PageManager.prototype.processLine = function(lineOfNumbers) {
 
 	var splitsies = lineOfNumbers.split(" ");
-	console.log(splitsies);
-	return this.sumArray.push(splitsies[0]);
+
+	// the only available numbers are the current position and the one next to it
+	var available = splitsies.slice(this.previousPosition, this.previousPosition + 2);
+
+	// find the largest availble
+	var largest = available[0];
+	var currentPosition = 0;
+
+	if(typeof available[1] != "undefined" && available[1] > available[0]) {
+		largest = available[1];
+		currentPosition = 1;
+	}
+
+	// set the previous position to the old position + the new position
+	this.previousPosition = this.previousPosition + currentPosition;
+
+	return this.sumArray.push(parseInt(largest));
 };
 
 
